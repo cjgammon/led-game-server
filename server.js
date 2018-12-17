@@ -24,12 +24,17 @@ var players = {};
 // Add the WebSocket handlers
 io.on('connection', function(socket) {
   socket.on('new player', function() {
-     players[socket.id] = {};
+     players[socket.id] = {score: 0};
+
+     io.sockets.emit('update', players);
      console.log('new player', socket.id, JSON.stringify(players));
   });
 
   socket.on('click', function() {
-    console.log("click!", socket.id);
+    players[socket.id].score ++;
+
+    console.log("click!", socket.id, players[socket.id].score);
+    io.sockets.emit('update', players);
   });
 
   socket.on('disconnect', function() {
@@ -37,7 +42,3 @@ io.on('connection', function(socket) {
      delete players[socket.id];
   });
 });
-
-setInterval(function() {
-  io.sockets.emit('message', 'hi!');
-}, 1000);

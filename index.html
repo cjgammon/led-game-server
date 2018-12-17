@@ -3,9 +3,18 @@
     <title>A Multiplayer Game</title>
     <style>
       canvas {
-        width: 800px;
-        height: 600px;
-        border: 5px solid black;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+      }
+
+      body{
+        font-family: sans-serif;
+        color: white;
+        background: black;
       }
     </style>
     <script src="/socket.io/socket.io.js"></script>
@@ -13,6 +22,9 @@
   <body>
     <h1>LED GAME</h1>
     <h2 id="title"></h2>
+    <div>My Score: <span id="myscore">0</span></div>
+    <div id="otherscores">
+    </div>
     <canvas id="canvas"></canvas>
   </body>
   <script src="/static/game.js"></script>
