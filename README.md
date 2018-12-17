@@ -5,7 +5,7 @@ run
 node server.js
 ```
 
-will be running on:
+then open
 ```
 http://localhost:5000/
 ```
