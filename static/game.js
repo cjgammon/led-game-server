@@ -46,6 +46,11 @@ function addOtherScore(data, i) {
   otherscoresEl.appendChild(container);
 }
 
+//input events
+document.ontouchmove = function(event){
+    event.preventDefault();
+}
+
 document.body.addEventListener('click', (e) => {
   let circle = {x: e.x, y: e.y, r: 100};
   circles.push(circle);
