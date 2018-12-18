@@ -10,10 +10,8 @@ let mycolor = 'black';
 
 canvas.width = document.documentElement.clientWidth;
 canvas.height = document.documentElement.clientHeight;
-canvas.style.width = document.documentElement.clientWidth + 'px';
-canvas.style.height = document.documentElement.clientHeight + 'px';
-
-
+canvas.style.width = canvas.width + 'px';
+canvas.style.height = canvas.height + 'px';
 
 socket.emit('new player');
 
