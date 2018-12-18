@@ -53,7 +53,7 @@ document.body.addEventListener('click', (e) => {
 });
 
 document.body.addEventListener('touchstart', (e) => {
-  let circle = {x: e.x, y: e.y, r: 100};
+  let circle = {x: e.touches[0].clientX, y: e.touches[0].clientY, r: 100};
   circles.push(circle);
   socket.emit('click');
 });
