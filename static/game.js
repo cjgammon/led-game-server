@@ -22,8 +22,6 @@ socket.on('connect', function(){
 socket.on('update', function(data) {
   otherscoresEl.innerText = "";
 
-  console.log(data);
-
   for (i in data) {
     if (i == id) {
       myscoreEl.innerText = data[id].score;
@@ -54,12 +52,17 @@ document.body.addEventListener('click', (e) => {
   socket.emit('click');
 });
 
+document.body.addEventListener('touchstart', (e) => {
+  let circle = {x: e.x, y: e.y, r: 100};
+  circles.push(circle);
+  socket.emit('click');
+});
+
 function render() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   for (var i = 0; i < circles.length; i++) {
     let alpha = ((-circles[i].r / 2) + 200) / 100;
-    console.log('color', mycolor);
 
     ctx.save();
     ctx.globalAlpha = alpha < 0 ? 0 : alpha;
