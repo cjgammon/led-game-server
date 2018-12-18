@@ -8,8 +8,8 @@ let ctx = canvas.getContext('2d');
 let circles = [];
 let mycolor = 'black';
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+canvas.width = document.documentElement.clientWidth;
+canvas.height = document.documentElement.clientHeight;
 
 socket.emit('new player');
 
