@@ -16,6 +16,10 @@ app.get('/', function(request, response) {
   response.sendFile(path.join(__dirname, 'index.html'));
 });
 
+app.get('/arduino', function(request, response) {
+  //response.sendFile(path.join(__dirname, 'index.html'));
+});
+
 // Starts the server.
 server.listen(PORT, function() {
   console.log('Starting server on port 5000');
