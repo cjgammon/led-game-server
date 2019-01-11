@@ -17,8 +17,7 @@ app.get('/', function(request, response) {
 });
 
 app.get('/arduino', function(request, response) {
-  //response.sendFile(path.join(__dirname, 'index.html'));
-  response.send(["yes!"]);
+  response.send([JSON.stringify(players) + "\n\r"]);
 });
 
 // Starts the server.
