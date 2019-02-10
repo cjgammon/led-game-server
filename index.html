@@ -28,16 +28,43 @@
         margin: 0;
         position: fixed;
       }
+
+      .view{
+        display: none;
+      }
+
+      #waitingView{
+        display: block;
+      }
     </style>
     <script src="/socket.io/socket.io.js"></script>
   </head>
   <body>
     <h1>LED GAME</h1>
     <h2 id="title"></h2>
-    <div>My Score: <span id="myscore">0</span></div>
-    <div id="otherscores">
+    <div id="playerlist"></div>
+
+    <div id="waitingView" class="view">
+      <div>waiting</div>
     </div>
-    <canvas id="canvas"></canvas>
+
+    <div id="countdownView" class="view">
+      <div>Countdown <span id="countdown"></span></div>
+    </div>
+
+    <div id="gameplayView" class="view">
+      <div>Game Timer <span id="gametime"></span></div>
+
+      <div>My Score: <span id="myscore">0</span></div>
+      <div id="otherscores">
+      </div>
+      <canvas id="canvas"></canvas>
+    </div>
+
+    <div id="gameoverView" class="view">
+      game over
+    </div>
+
   </body>
   <script src="/static/game.js"></script>
 </html>
