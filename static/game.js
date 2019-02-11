@@ -1,6 +1,7 @@
 var socket = io();
 
 var id;
+let mode = 0;
 
 let waitingView = document.getElementById('waitingView');
 let gameplayView = document.getElementById('gameplayView');
@@ -13,10 +14,15 @@ let canvas = document.getElementById('canvas');
 let countdownEl = document.getElementById('countdown');
 let gametimeEl = document.getElementById('gametime');
 let playerlistEl = document.getElementById('playerlist');
+let gameoverEl = document.getElementById('gameoverText');
+
+let playercountEl = document.getElementById('playercount');
 
 let ctx = canvas.getContext('2d');
 let circles = [];
 let mycolor = 'black';
+
+let winnerColor = null;
 
 canvas.width = document.documentElement.clientWidth;
 canvas.height = document.documentElement.clientHeight;
@@ -35,6 +41,8 @@ socket.on('update', function(data) {
   otherscoresEl.innerText = "";
   playerlistEl.innerText = "";
 
+  let count = 0;
+
   for (i in data) {
     if (i == id) {
       myscoreEl.innerText = data[id].score;
@@ -44,23 +52,50 @@ socket.on('update', function(data) {
       //addOtherScore(data, i);
       listPlayers(data, i);
     }
+
+    count ++;
   }
+
+  playercountEl.innerText = count;
+});
+
+socket.on('final', function(data) {
+  let winner;
+
+  for (i in data) {
+    if (!winner) {
+      winner = {id: i, score: data[i].score, color: data[i].color};
+    } else {
+      if (data[i].score > winner.score) {
+        winner = {id: i, score: data[i].score, color: data[i].color};
+      }
+    }
+  }
+
+  if (winner.id == id) {
+    gameoverEl.innerText = "You Win!";
+  } else {
+    gameoverEl.innerText = "";
+  }
+
+  winnerColor = winner.color;
 });
 
 socket.on('startTime', function(data) {
-  countdownEl.innerText = 5 - data;
+  countdownEl.innerText = data.max - data.time; //make sure to subtract total
 });
 
 socket.on('gameTime', function(data) {
-  gametimeEl.innerText = data;
+  gametimeEl.innerText = data.max - data.time;
 });
 
 socket.on('modeChange', function(data) {
   //countdownEl.innerText = 5 - data;
+  mode = data;
 
   switch (data) {
     case 0: //waiting
-      waitingView.style.display = "block";
+      waitingView.style.display = "flex";
       gameplayView.style.display = "none";
       countdownView.style.display = "none";
       gameoverView.style.display = "none";
@@ -68,12 +103,12 @@ socket.on('modeChange', function(data) {
     case 1: //countdown
       waitingView.style.display = "none";
       gameplayView.style.display = "none";
-      countdownView.style.display = "block";
+      countdownView.style.display = "flex";
       gameoverView.style.display = "none";
       break;
     case 2: //gameplay
       waitingView.style.display = "none";
-      gameplayView.style.display = "block";
+      gameplayView.style.display = "flex";
       countdownView.style.display = "none";
       gameoverView.style.display = "none";
       break;
@@ -81,7 +116,7 @@ socket.on('modeChange', function(data) {
       waitingView.style.display = "none";
       gameplayView.style.display = "none";
       countdownView.style.display = "none";
-      gameoverView.style.display = "block";
+      gameoverView.style.display = "flex";
       break;
   }
 });
@@ -123,6 +158,11 @@ document.body.addEventListener('touchstart', (e) => {
 
 function render() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  if (winnerColor && mode == 3) {
+    ctx.fillStyle = winnerColor;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  }
 
   for (var i = 0; i < circles.length; i++) {
     let alpha = ((-circles[i].r / 2) + 200) / 100;

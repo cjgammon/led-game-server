@@ -10,17 +10,18 @@ var io = socketIO(server);
 
 var colors = ['#ff0000', '#00ff00', '#0000ff'];
 
+let INITIAL_COUNTDOWN_TIME = 0;
+let MAX_COUNTDOWN_TIME = 5;
+let MAX_GAME_TIME = 10;
+
 var playerCount = 0;
 var players = {};
 let mode = 0;
 let gameTime = 0;
-let startTime = 0;
+let startTime = INITIAL_COUNTDOWN_TIME;
 let startTimer = null;
 let startTimeout = null;
 let gameTimer = null;
-
-let MAX_COUNTDOWN_TIME = 5;
-let MAX_GAME_TIME = 10;
 
 
 app.set('port', PORT);
@@ -65,7 +66,7 @@ io.on('connection', function(socket) {
 
     if (playerCount > 1 && mode == 0) {
       clearTimeout(startTimeout);
-      startTimeout = setTimeout(() => startCountdown(), 1000);
+      startTimeout = setTimeout(() => startCountdown(), 100);
       //startCountdown();
     }
   });
@@ -88,27 +89,37 @@ io.on('connection', function(socket) {
 
 function startCountdown() {
   mode = 1;
+  startTime = INITIAL_COUNTDOWN_TIME;
   io.sockets.emit('modeChange', mode);
+  io.sockets.emit('startTime', {time: startTime, max: MAX_COUNTDOWN_TIME});
   startTimer = setInterval(() => gameCountdown(), 1000);
 }
 
 function gameOver() {
-  //timeout to reset
+  //TODO:: run animation and identify winners
+  io.sockets.emit('final', players);
+
   setTimeout(() => {
-    clearTimeout(startTimeout);
-    startTimeout = setTimeout(() => startCountdown(), 1000);
-  }, 1000)
+    if (playerCount > 1) { //if enough players go again...
+      clearTimeout(startTimeout);
+      startTimeout = setTimeout(() => startCountdown(), 100);
+    } else {
+      mode = 0;
+      io.sockets.emit('modeChange', mode);
+    }
+  }, 5000);
 }
 
 function gameInterval() {
   gameTime ++;
   console.log('game update');
-  io.sockets.emit('gameTime', gameTime);
+  io.sockets.emit('gameTime', {time: gameTime, max: MAX_GAME_TIME});
 
-  if (gameTime == MAX_GAME_TIME){
-    gameTime = 0;
+  if (gameTime == MAX_GAME_TIME + 1){
+
     mode = 3;
     io.sockets.emit('modeChange', mode);
+
     clearInterval(gameTimer);
     gameOver();
   }
@@ -116,10 +127,18 @@ function gameInterval() {
 
 function startGame() {
   console.log('gameplay');
+
+  for (i in players) { //reset scores
+    players[i].score = 0;
+  }
+  io.sockets.emit('update', players);
+
+  gameTime = 0;
+  io.sockets.emit('gameTime', {time: gameTime, max: MAX_GAME_TIME});
+
   mode = 2;
   io.sockets.emit('modeChange', mode);
-  startTime = 0;
-  gameTime = 0;
+
   gameTimer = setInterval(() => gameInterval(), 1000);
 }
 
@@ -128,9 +147,9 @@ function gameCountdown() {
   startTime ++;
 
   console.log('startTimer', startTime);
-  io.sockets.emit('startTime', startTime);
+  io.sockets.emit('startTime', {time: startTime, max: MAX_COUNTDOWN_TIME});
 
-  if (startTime === MAX_COUNTDOWN_TIME) {
+  if (startTime === MAX_COUNTDOWN_TIME + 1) {
     startGame();
     clearInterval(startTimer);
   }

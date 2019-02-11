@@ -2,6 +2,7 @@
   <head>
     <title>A Multiplayer Game</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <style>
       canvas {
         position: absolute;
@@ -13,7 +14,8 @@
       }
 
       body{
-        font-family: sans-serif;
+        font-family: 'Open Sans', sans-serif;
+        font-weight: 300;
         color: white;
         background: black;
         -webkit-touch-callout: none; /* iOS Safari */
@@ -31,38 +33,90 @@
 
       .view{
         display: none;
+        width: 100vw;
+        height: 100vh;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        text-align: center;
       }
 
       #waitingView{
-        display: block;
+        display: flex;
       }
+
+      #debugView{
+        display: none;
+      }
+
+      #countdown{
+        font-size: 80px;
+        font-weight: 800;
+      }
+
+      #myscore{
+        font-size: 130px;
+        font-weight: 800;
+      }
+
+      #countdownTimer{
+        margin-bottom: 30px;
+      }
+
+      #playercount{
+        font-weight: 700;
+      }
+
+      #gameplayTimer{
+        position: absolute;
+        top: 5px;
+      }
+
+      #gameoverView{
+        font-size: 14px;
+      }
+
+      #gameoverText{
+        font-weight: 800;
+        font-size: 60px;
+      }
+
     </style>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700,800" rel="stylesheet">
     <script src="/socket.io/socket.io.js"></script>
   </head>
   <body>
-    <h1>LED GAME</h1>
-    <h2 id="title"></h2>
-    <div id="playerlist"></div>
+
+    <canvas id="canvas"></canvas>
+
+    <div id="debugView">
+      <h2 id="title"></h2>
+      <div id="playerlist"></div>
+    </div>
 
     <div id="waitingView" class="view">
-      <div>waiting</div>
+      <div>Waiting for more players</div>
     </div>
 
     <div id="countdownView" class="view">
-      <div>Countdown <span id="countdown"></span></div>
+      <div id="countdownTimer">
+        <div>Game Starting In</div>
+        <div id="countdown"></div>
+      </div>
+      <div>Players: <span id="playercount"></span></div>
     </div>
 
     <div id="gameplayView" class="view">
-      <div>Game Timer <span id="gametime"></span></div>
+      <div id="gameplayTimer"><span id="gametime"></span> Seconds Left</div>
 
-      <div>My Score: <span id="myscore">0</span></div>
+      <div><span id="myscore">0</span></div>
       <div id="otherscores">
       </div>
-      <canvas id="canvas"></canvas>
     </div>
 
     <div id="gameoverView" class="view">
-      game over
+      <div>Game Over</div>
+      <div id="gameoverText"></div>
     </div>
 
   </body>
