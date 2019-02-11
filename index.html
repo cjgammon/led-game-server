@@ -69,7 +69,7 @@
 
       #gameplayTimer{
         position: absolute;
-        top: 5px;
+        top: 20px;
       }
 
       #gameoverView{
@@ -79,6 +79,16 @@
       #gameoverText{
         font-weight: 800;
         font-size: 60px;
+      }
+
+      #playercountContainer{
+        position: absolute;
+        bottom: 20px;
+      }
+
+      #finalscore{
+        font-weight: 800;
+        font-size: 50px;
       }
 
     </style>
@@ -100,14 +110,14 @@
 
     <div id="countdownView" class="view">
       <div id="countdownTimer">
-        <div>Game Starting In</div>
+        <div>Game Starting</div>
         <div id="countdown"></div>
       </div>
-      <div>Players: <span id="playercount"></span></div>
+      <div id="playercountContainer"><span id="playercount"></span> Players</div>
     </div>
 
     <div id="gameplayView" class="view">
-      <div id="gameplayTimer"><span id="gametime"></span> Seconds Left</div>
+      <div id="gameplayTimer"><span id="gametime"></span> Seconds</div>
 
       <div><span id="myscore">0</span></div>
       <div id="otherscores">
@@ -117,6 +127,7 @@
     <div id="gameoverView" class="view">
       <div>Game Over</div>
       <div id="gameoverText"></div>
+      <div id="finalscore"></div>
     </div>
 
   </body>

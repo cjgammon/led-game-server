@@ -15,6 +15,7 @@ let countdownEl = document.getElementById('countdown');
 let gametimeEl = document.getElementById('gametime');
 let playerlistEl = document.getElementById('playerlist');
 let gameoverEl = document.getElementById('gameoverText');
+let finalscoreEl = document.getElementById('finalscore');
 
 let playercountEl = document.getElementById('playercount');
 
@@ -47,7 +48,6 @@ socket.on('update', function(data) {
     if (i == id) {
       myscoreEl.innerText = data[id].score;
       mycolor = data[id].color;
-      console.log('color', mycolor);
     } else {
       //addOtherScore(data, i);
       listPlayers(data, i);
@@ -63,6 +63,11 @@ socket.on('final', function(data) {
   let winner;
 
   for (i in data) {
+
+    if (i == id) {
+      finalscoreEl.innerText = data[id].score;
+    }
+
     if (!winner) {
       winner = {id: i, score: data[i].score, color: data[i].color};
     } else {
@@ -72,13 +77,17 @@ socket.on('final', function(data) {
     }
   }
 
-  if (winner.id == id) {
+  if (winner.id == id && winner.score != 0) {
     gameoverEl.innerText = "You Win!";
   } else {
     gameoverEl.innerText = "";
   }
 
-  winnerColor = winner.color;
+  if (winner.score != 0) {
+    winnerColor = winner.color;
+  } else {
+    winnerColor = "#000000";
+  }
 });
 
 socket.on('startTime', function(data) {
@@ -156,12 +165,26 @@ document.body.addEventListener('touchstart', (e) => {
   socket.emit('click');
 });
 
+let delta = 0;
+
 function render() {
+  delta += 0.05;
+
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   if (winnerColor && mode == 3) {
+    ctx.globalAlpha = 1;
     ctx.fillStyle = winnerColor;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
+  }
+
+  if (mode == 0 || mode == 1) {
+    ctx.globalAlpha = 0.5;
+    ctx.fillStyle = mycolor;
+    ctx.beginPath();
+    ctx.arc(canvas.width / 2, canvas.height / 2, 100 + Math.sin(delta) * 40, 0, 2 * Math.PI);
+    ctx.closePath();
+    ctx.fill();
   }
 
   for (var i = 0; i < circles.length; i++) {
