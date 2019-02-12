@@ -58,7 +58,8 @@ io.on('connection', function(socket) {
     let color = getRandomColor();
     players[socket.id] = {score: 0, color};
 
-    playerCount++;
+    //playerCount++;
+    playerCount = Object.keys(players).length;
 
     io.sockets.emit('update', players);
     console.log('new player', socket.id, JSON.stringify(players));
@@ -82,8 +83,19 @@ io.on('connection', function(socket) {
 
   socket.on('disconnect', function() {
      delete players[socket.id];
-     playerCount--;
+     //playerCount--;
+     playerCount = Object.keys(players).length;
      io.sockets.emit('update', players);
+
+     //TODO:: check if enough players to keep playing..
+     if (playerCount < 2) {
+       mode = 0;
+       io.sockets.emit('modeChange', mode);
+       clearTimeout(startTimeout);
+       clearInterval(startTimer);
+       clearInterval(gameTimer);
+     }
+
   });
 });
 
@@ -92,6 +104,7 @@ function startCountdown() {
   startTime = INITIAL_COUNTDOWN_TIME;
   io.sockets.emit('modeChange', mode);
   io.sockets.emit('startTime', {time: startTime, max: MAX_COUNTDOWN_TIME});
+  clearInterval(startTimer);
   startTimer = setInterval(() => gameCountdown(), 1000);
 }
 
@@ -139,6 +152,7 @@ function startGame() {
   mode = 2;
   io.sockets.emit('modeChange', mode);
 
+  clearInterval(gameTimer);
   gameTimer = setInterval(() => gameInterval(), 1000);
 }
 
