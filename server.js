@@ -11,8 +11,8 @@ var io = socketIO(server);
 var colors = ['#ff0000', '#00ff00', '#0000ff'];
 
 let INITIAL_COUNTDOWN_TIME = 0;
-let MAX_COUNTDOWN_TIME = 5;
-let MAX_GAME_TIME = 10;
+let MAX_COUNTDOWN_TIME = 10;
+let MAX_GAME_TIME = 30;
 
 var playerCount = 0;
 var players = {};
