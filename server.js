@@ -120,7 +120,7 @@ function gameOver() {
       mode = 0;
       io.sockets.emit('modeChange', mode);
     }
-  }, 5000);
+  }, 10000); //run final animation for 10 seconds..
 }
 
 function gameInterval() {
