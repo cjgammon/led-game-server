@@ -212,8 +212,6 @@ function draw() {
 
         circles[i].r+=5;
 
-        console.log(alpha);
-
         if (alpha == 0) {
           circles.splice(i, 1);
         }
