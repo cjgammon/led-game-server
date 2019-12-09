@@ -199,7 +199,7 @@ function draw() {
       ctx.fill();
     }
 
-    for (var i = circles.length - 1; i > 0; i--) {
+    for (var i = circles.length - 1; i > -1; i--) {
       let alpha = ((-circles[i].r / 2) + 200) / 100;
 
       ctx.save();
@@ -214,7 +214,7 @@ function draw() {
       circles[i].r+=5;
 
       console.log(alpha);
-      
+
       if (alpha == 0) {
         circles.splice(i, 1);
       }
