@@ -187,7 +187,7 @@ function render() {
     ctx.fill();
   }
 
-  for (var i = 0; i < circles.length; i++) {
+  for (var i = circles.length; i > 0; i--) {
     let alpha = ((-circles[i].r / 2) + 200) / 100;
 
     ctx.save();
@@ -200,8 +200,13 @@ function render() {
     ctx.restore();
 
     circles[i].r+=5;
+
+    if (alpha == 0) {
+      circles.splice(i, 1);
+    }
   }
 
+  console.log(circles.length);
   requestAnimationFrame(render);
 }
 

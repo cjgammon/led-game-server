@@ -109,9 +109,9 @@ function startCountdown() {
 }
 
 function gameOver() {
-  //TODO:: run animation and identify winners
   io.sockets.emit('final', players);
 
+  //TODO:: maybe wait for some trigger from arduino to move on??
   setTimeout(() => {
     if (playerCount > 1) { //if enough players go again...
       clearTimeout(startTimeout);
