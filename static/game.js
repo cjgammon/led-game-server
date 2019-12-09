@@ -169,10 +169,8 @@ document.body.addEventListener('touchstart', (e) => {
 let delta = 0;
 
 function render() {
-  if (mode !== 3) {
-    draw();
-  }
 
+  draw();
   
   console.log(circles.length);
   requestAnimationFrame(render);
@@ -199,26 +197,29 @@ function draw() {
       ctx.fill();
     }
 
-    for (var i = circles.length - 1; i > -1; i--) {
-      let alpha = ((-circles[i].r / 2) + 200) / 100;
+    if (mode !== 3) {
+      for (var i = circles.length - 1; i > -1; i--) {
+        let alpha = ((-circles[i].r / 2) + 200) / 100;
 
-      ctx.save();
-      ctx.globalAlpha = alpha < 0 ? 0 : alpha;
-      ctx.fillStyle = mycolor;
-      ctx.beginPath();
-      ctx.arc(circles[i].x, circles[i].y, circles[i].r, 0, 2 * Math.PI);
-      ctx.closePath();
-      ctx.fill();
-      ctx.restore();
+        ctx.save();
+        ctx.globalAlpha = alpha < 0 ? 0 : alpha;
+        ctx.fillStyle = mycolor;
+        ctx.beginPath();
+        ctx.arc(circles[i].x, circles[i].y, circles[i].r, 0, 2 * Math.PI);
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
 
-      circles[i].r+=5;
+        circles[i].r+=5;
 
-      console.log(alpha);
+        console.log(alpha);
 
-      if (alpha == 0) {
-        circles.splice(i, 1);
+        if (alpha == 0) {
+          circles.splice(i, 1);
+        }
       }
     }
+
 }
 
 
