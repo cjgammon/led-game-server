@@ -187,7 +187,7 @@ function render() {
     ctx.fill();
   }
 
-  for (var i = circles.length; i > 0; i--) {
+  for (var i = circles.length - 1; i > 0; i--) {
     let alpha = ((-circles[i].r / 2) + 200) / 100;
 
     ctx.save();
