@@ -122,6 +122,7 @@ socket.on('modeChange', function(data) {
       gameoverView.style.display = "none";
       break;
     case 3: //gameover
+      circles = [];
       waitingView.style.display = "none";
       gameplayView.style.display = "none";
       countdownView.style.display = "none";
@@ -168,46 +169,58 @@ document.body.addEventListener('touchstart', (e) => {
 let delta = 0;
 
 function render() {
-  delta += 0.05;
-
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  if (winnerColor && mode == 3) {
-    ctx.globalAlpha = 1;
-    ctx.fillStyle = winnerColor;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  if (mode !== 3) {
+    draw();
   }
 
-  if (mode == 0 || mode == 1) {
-    ctx.globalAlpha = 0.5;
-    ctx.fillStyle = mycolor;
-    ctx.beginPath();
-    ctx.arc(canvas.width / 2, canvas.height / 2, 100 + Math.sin(delta) * 40, 0, 2 * Math.PI);
-    ctx.closePath();
-    ctx.fill();
-  }
-
-  for (var i = circles.length - 1; i > 0; i--) {
-    let alpha = ((-circles[i].r / 2) + 200) / 100;
-
-    ctx.save();
-    ctx.globalAlpha = alpha < 0 ? 0 : alpha;
-    ctx.fillStyle = mycolor;
-    ctx.beginPath();
-    ctx.arc(circles[i].x, circles[i].y, circles[i].r, 0, 2 * Math.PI);
-    ctx.closePath();
-    ctx.fill();
-    ctx.restore();
-
-    circles[i].r+=5;
-
-    if (alpha == 0) {
-      circles.splice(i, 1);
-    }
-  }
-
+  
   console.log(circles.length);
   requestAnimationFrame(render);
 }
+
+
+function draw() {
+    delta += 0.05;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    if (winnerColor && mode == 3) {
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = winnerColor;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+
+    if (mode == 0 || mode == 1) {
+      ctx.globalAlpha = 0.5;
+      ctx.fillStyle = mycolor;
+      ctx.beginPath();
+      ctx.arc(canvas.width / 2, canvas.height / 2, 100 + Math.sin(delta) * 40, 0, 2 * Math.PI);
+      ctx.closePath();
+      ctx.fill();
+    }
+
+    for (var i = circles.length - 1; i > 0; i--) {
+      let alpha = ((-circles[i].r / 2) + 200) / 100;
+
+      ctx.save();
+      ctx.globalAlpha = alpha < 0 ? 0 : alpha;
+      ctx.fillStyle = mycolor;
+      ctx.beginPath();
+      ctx.arc(circles[i].x, circles[i].y, circles[i].r, 0, 2 * Math.PI);
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+
+      circles[i].r+=5;
+
+      console.log(alpha);
+      
+      if (alpha == 0) {
+        circles.splice(i, 1);
+      }
+    }
+}
+
+
 
 requestAnimationFrame(render);
