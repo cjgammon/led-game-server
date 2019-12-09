@@ -172,7 +172,7 @@ function render() {
 
   draw();
   
-  console.log(circles.length);
+  //console.log(circles.length);
   requestAnimationFrame(render);
 }
 
