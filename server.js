@@ -8,7 +8,8 @@ var app = express();
 var server = http.Server(app);
 var io = socketIO(server);
 
-var colors = ['#ff0000', '#00ff00', '#0000ff'];
+var colorPool = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff'];
+var usedColors = [];
 
 let INITIAL_COUNTDOWN_TIME = 0;
 let MAX_COUNTDOWN_TIME = 10;
@@ -47,7 +48,6 @@ server.listen(PORT, function() {
   console.log('Starting server on port 5000');
 });
 
-
 // Add the WebSocket handlers
 io.on('connection', function(socket) {
 
@@ -55,13 +55,14 @@ io.on('connection', function(socket) {
   //TODO:: generate players based on connected
 
   socket.on('new player', function() {
-    let color = getRandomColor();
+    let color = getUnusedColorFromPool();
     players[socket.id] = {score: 0, color};
 
     //playerCount++;
     playerCount = Object.keys(players).length;
 
     io.sockets.emit('update', players);
+    io.sockets.emit('modeChange', mode);
     console.log('new player', socket.id, JSON.stringify(players));
     console.log('count', playerCount);
 
@@ -82,6 +83,12 @@ io.on('connection', function(socket) {
   });
 
   socket.on('disconnect', function() {
+    //remove color from used colors...
+    if (players[socket.id]) {
+      let color = players[socket.id].color;
+      returnUsedColor(color);
+    }
+    
      delete players[socket.id];
      //playerCount--;
      playerCount = Object.keys(players).length;
@@ -125,7 +132,7 @@ function gameOver() {
 
 function gameInterval() {
   gameTime ++;
-  console.log('game update');
+  //console.log('game update');
   io.sockets.emit('gameTime', {time: gameTime, max: MAX_GAME_TIME});
 
   if (gameTime == MAX_GAME_TIME + 1){
@@ -169,6 +176,47 @@ function gameCountdown() {
   }
 }
 
+function getUnusedColorFromPool() {
+
+  if (usedColors.length > 0) {
+    for (let i = 0; i < colorPool.length; i++) {
+      let found = false;
+      for (let j = 0; j < usedColors.length; j++) {
+        if (usedColors[j] == colorPool[i]) {
+          found = true;
+        } 
+      }
+
+      if (found == false) {
+        let color = colorPool[i];
+        usedColors.push(color);
+        return color;
+      }
+    }
+
+    //no unused colors
+    let color = colorPool[Math.floor(Math.random() * colorPool.length)];
+    usedColors.push(color);
+    return color;
+
+  } else {
+      //no used colors..
+      let color = colorPool[0];
+      usedColors.push(color);
+      return color;
+  }
+}
+
+function returnUsedColor(color) {
+  for (let i = usedColors.length; i > -1; i--) {
+    if (usedColors[i] == color) {
+      usedColors.splice(i, 1);
+      return;
+    }
+  }
+}
+
+/*
 function getRandomColor() {
   var letters = '0123456789ABCDEF';
   var color = '#';
@@ -177,3 +225,4 @@ function getRandomColor() {
   }
   return color;
 }
+*/
